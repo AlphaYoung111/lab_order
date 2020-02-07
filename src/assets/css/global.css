@@ -1,0 +1,22 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+#app{
+  min-width: 1300px;
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  width: 100vw;
+  height:100vh;
+}
+
+.el-menu-item,
+.el-menu,
+.el-submenu__title{
+  font-size: 18px !important;
+}
+
+
