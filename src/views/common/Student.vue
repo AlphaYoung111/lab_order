@@ -4,7 +4,7 @@
     <nav-top></nav-top>
     <!-- 左边控制栏 -->
     <el-menu
-      default-active="2"
+      :default-active="currentIndex"
       class="el-menu-vertical-demo"
       background-color="#525f7f"
       text-color="#fff"
@@ -34,13 +34,26 @@
   </div>
 </template>
 <script>
-import NavTop from "@/components/NavTop";
+import NavTop from '@/components/NavTop'
 export default {
-  name: "student",
+  name: 'student',
   components: {
     NavTop
+  },
+  data() {
+    return {
+      currentIndex:'',
+    }
+  },
+  created(){
+    this.getRoute()
+  },
+  methods:{
+    getRoute(){
+      this.currentIndex = this.$route.path
+    }
   }
-};
+}
 </script>
 <style scoped>
 .student {
@@ -53,12 +66,12 @@ export default {
   border-right: 0px;
   height: calc(100% - 100px);
   width: 300px;
-  float:left;
+  float: left;
 }
-.router_place{
+.router_place {
   width: calc(100% - 300px);
   height: calc(100% - 100px);
-  background-color: red;
-  float:right;
+
+  float: right;
 }
 </style>
