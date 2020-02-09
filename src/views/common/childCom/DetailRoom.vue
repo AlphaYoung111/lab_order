@@ -1,7 +1,7 @@
 <template>
   <div class="detail_room">
     <el-row :gutter="10">
-      <el-col :span="8" v-for="item in roomData" :key="item.id" >
+      <el-col :span="6" v-for="item in roomData" :key="item.id" >
        <div @click="goRoomItem(item.id)">
         <el-card shadow="hover" >
           <div class="building">{{item.building}}</div>
@@ -26,7 +26,11 @@ export default {
         {id:10101,building:'厚德大厦',room:'402',total:30,remaing:20},
         {id:10102,building:'日新大厦',room:'403',total:30,remaing:30},
         {id:10103,building:'明德大厦',room:'404',total:30,remaing:10},
-        {id:10104,building:'正新大厦',room:'405',total:30,remaing:5}
+        {id:10104,building:'正新大厦',room:'405',total:30,remaing:5},
+        {id:10105,building:'正新大厦',room:'406',total:30,remaing:5},
+        {id:10106,building:'正新大厦',room:'407',total:30,remaing:5},
+        {id:10107,building:'正新大厦',room:'408',total:30,remaing:5},
+        {id:10108,building:'正新大厦',room:'409',total:30,remaing:5},
       ]
     }
   },
@@ -41,17 +45,18 @@ export default {
     },
     //进入详情页
     goRoomItem(id){
-      this.$router.push('/room_item/'+id)
+      this.$router.push('/common/room_item/'+id)
     }
   }
 }
 </script>
 <style scoped>
 .detail_room{
-  margin: 50px 40px; 
+  margin: 40px 40px; 
+  overflow: hidden;
 }
 .el-card{
-  height: 320px;
+  height: 240px;
   text-align: center;
   /* width: 250px; */
   background-color: #a0cfff;
@@ -64,7 +69,7 @@ export default {
   cursor: pointer;
 }
 .building{
-  margin-top: 40px;
+  margin-top: 20px;
   font-size: 40px;
   font-weight: 500;
   user-select: none;

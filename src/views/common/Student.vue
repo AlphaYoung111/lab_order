@@ -17,14 +17,14 @@
           <i class="el-icon-menu"></i>
           <span>实验室</span>
         </template>
-        <el-menu-item index="all_cate">实验室分类</el-menu-item>
+        <el-menu-item index="/common/all_cate">实验室分类</el-menu-item>
       </el-submenu>
       <el-submenu index="2">
         <template slot="title">
           <i class="el-icon-user"></i>
           <span>个人中心</span>
         </template>
-        <el-menu-item index="2-1">我的账户</el-menu-item>
+        <el-menu-item index="/common/profile">我的账户</el-menu-item>
       </el-submenu>
     </el-menu>
     <!-- 右边显示区域 -->
@@ -60,6 +60,7 @@ export default {
   width: 100%;
   height: 100%;
   background-color: #eee;
+  overflow: hidden;
   /* display:flex; */
 }
 .el-menu {
@@ -71,7 +72,6 @@ export default {
 .router_place {
   width: calc(100% - 300px);
   height: calc(100% - 100px);
-
   float: right;
 }
 </style>

@@ -1,12 +1,13 @@
 <template>
   <div>
     <el-card>
+      <el-alert title="提交成功后，会自动跳转实验室分类界面" type="info" center show-icon :closable="false"></el-alert>
       <!-- 验证表单 -->
       <el-form
         :model="orderForm"
         :rules="orderFormRules"
         ref="orderFormRef"
-        label-width="120px"
+        label-width="160px"
         class="demo-ruleForm"
         label-position="right"
       >
@@ -58,30 +59,53 @@
             ></el-option>
           </el-select>
         </el-form-item>
+        <!-- 手机号码 -->
+        <el-form-item label="手机号码" prop="tel">
+          <el-input v-model="orderForm.tel" placeholder="请输入用于通知的手机号码" clearable></el-input>
+        </el-form-item>
+        <!-- 提交 重置 -->
+        <el-form-item>
+          <el-button type="primary" @click="sendOrder">提交</el-button>
+          <el-button type="info" @click="resetForm">重置</el-button>
+        </el-form-item>
       </el-form>
     </el-card>
   </div>
 </template>
 <script>
+import { mapActions } from 'vuex'
 export default {
   name: 'roomitem',
   data() {
+    //周数验证规则
     var termWeek = (rule, val, cb) => {
-      if (val > this.totalWeek || val < this.totalWeek) {
-        return cb(new Error(`请输入1 ~ ${this.totalWeek} 周`))
-      } else {
+      if (val <= this.$data.totalWeek && val >= 1) {
         return cb()
+      } else {
+        return cb(new Error(`请输入1 ~ ${this.$data.totalWeek} 周`))
+      }
+    }
+    // 手机号码验证
+    var telRule = (rule, val, cb) => {
+      const telReg = /^(13[0-9]|14[5|7]|15[0|1|2|3|4|5|6|7|8|9]|18[0|1|2|3|5|6|7|8|9])\d{8}$/
+      if (telReg.test(val)) {
+        return cb()
+      } else {
+        return cb(new Error('请输入正确的手机号码'))
       }
     }
     return {
-      room_id: null,
+      // room_id: null,
       // 申请表单的数据
       orderForm: {
-        week: 1,
+        week: null,
         day: '',
         classBetween: null,
         isTeacher: false,
-        num: null
+        num: null,
+        tel: null,
+        isCheck: false,
+        room_id:null,
       },
       totalWeek: 5,
       orderFormRules: {
@@ -97,7 +121,14 @@ export default {
         classBetween: [
           { required: true, message: '请选择具体节数', trigger: 'blur' }
         ],
-        num: [{ required: true, message: '请选择人数', trigger: 'blur' }]
+        num: [{ required: true, message: '请选择人数', trigger: 'blur' }],
+        tel: [
+          {
+            required: true,
+            trigger: 'blur',
+            validator: telRule
+          }
+        ]
       },
       // 星期选项数据
       options: [
@@ -134,20 +165,55 @@ export default {
     this.getRoomItem()
   },
   methods: {
+    ...mapActions,
     getRoomItem() {
-      this.room_id = this.$route.params.id
+      this.orderForm.room_id = this.$route.params.id
     },
     daySelect() {
       // console.log(this.orderForm.day)
+    },
+    // 提交申请
+    sendOrder() {
+      this.$refs.orderFormRef.validate(valid => {
+        if (!valid) {
+          return this.$message.error('请修改报错选项')
+        }
+        const item = this.orderForm
+        this.$store.dispatch('addOrder', item)
+        this.$message.success('申请成功！请等待审批。')
+        setTimeout(() => {
+          this.$router.push('/common/all_cate')
+        }, 2000)
+      })
+    },
+    // 重置表单
+    resetForm() {
+      this.$refs.orderFormRef.resetFields()
     }
   }
 }
 </script>
 <style scoped>
 .el-card {
-  margin: 30px;
+  margin: 70px auto;
+  width: 80%;
 }
 .el-input {
   width: 300px;
+}
+.el-form {
+  width: 70%;
+  height: auto;
+  margin: 20px auto;
+  /* border: 1px solid red; */
+}
+.el-form-item {
+  margin-bottom: 30px;
+}
+.el-button {
+  margin-right: 20px;
+}
+.el-dialog div {
+  text-align: center;
 }
 </style>

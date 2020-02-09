@@ -1,42 +1,66 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 const Home = () => import('@/views/Home')
-const Admin = () => import('@/views/admin/Admin')
 const Student = () => import('@/views/common/Student')
 const AllCate = () => import('@/views/common/childCom/AllCate')
 const DetailRoom = () => import('@/views/common/childCom/DetailRoom')
 const RoomItem = () => import('@/views/common/childCom/RoomItem')
+const Profile = () => import('@/views/common/childCom/Profile')
+const Admin = () => import('@/views/admin/Admin')
+const ApproveOrder = () => import('@/views/admin/childCom/ApproveOrder')
+const LessonTable = () => import('@/views/admin/childCom/LessonTable')
+
 Vue.use(VueRouter)
 
 const routes = [{
-    path: '/',
+    path: '/common',
     name: 'student',
     component: Student,
     children: [{
         path: '',
-        redirect: '/home'
+        redirect: 'home'
       },
       {
-        path: '/home',
+        path: 'home',
         component: Home
       },
       {
-        path: '/all_cate',
+        path: 'all_cate',
         component: AllCate
       },
       {
-        path: '/detail_room/:id',
+        path: 'detail_room/:id',
         component: DetailRoom
       },
       {
-        path: '/room_item/:id',
+        path: 'room_item/:id',
         component: RoomItem
+      },
+      {
+        path: 'profile',
+        component: Profile
       }
     ]
   },
   {
-    path: '/admin',
-    component: Admin
+    path: '/',
+    component: Admin,
+    children: [{
+        path: '',
+        redirect: 'home'
+      }, {
+        path: 'home',
+        component: Home
+      },
+      {
+        path: 'approve_order',
+        component: ApproveOrder
+      },
+      {
+        path: 'lesson_table',
+        component: LessonTable
+      }
+    ]
   }
 
 ]

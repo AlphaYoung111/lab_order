@@ -4,19 +4,35 @@
   box-sizing: border-box;
 }
 
-#app{
+#app {
   min-width: 1300px;
   padding: 0;
   margin: 0;
   box-sizing: border-box;
   width: 100vw;
-  height:100vh;
+  height: 100vh;
 }
 
 .el-menu-item,
 .el-menu,
-.el-submenu__title{
+.el-submenu__title {
   font-size: 18px !important;
 }
 
+.el-tabs__item {
+  font-size: 20px !important;
+  padding: 5px;
+}
 
+.el-form-item__label {
+  font-size: 20px !important;
+}
+
+.el-table-column {
+  min-height: 60px !important;
+  font-size: 18px;
+}
+
+.el-switch__label {
+  font-size: 16px !important;
+}
