@@ -1,11 +1,294 @@
 <template>
-  <div>22</div>
+  <div>
+    <el-card :body-style="{ padding: '15px' }">
+      <el-tabs v-model="activeName">
+        <el-tab-pane label="上传表格" name="first">
+          <el-alert title="请点击下方按钮，上传人员信息表格" type="info" center :closable="false" show-icon></el-alert>
+          <el-upload
+            class="upload-demo"
+            action
+            :on-change="handleChange"
+            :on-remove="handleRemove"
+            :on-exceed="handleExceed"
+            :limit="1"
+            accept="application/vnd.openxmlformats-    
+        officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+            :auto-upload="false"
+          >
+            <el-button size="small" type="primary" class="upload_btn">点击上传</el-button>
+          </el-upload>
+        </el-tab-pane>
+        <el-tab-pane label="数据汇总" name="second">
+          <el-alert title="请选择下方时间，查看该天申请数据" type="info" show-icon center :closable="false"></el-alert>
+
+          <!-- 时间选择 -->
+          <el-date-picker
+            v-model="date"
+            type="date"
+            placeholder="选择日期"
+            value-format="yyyy-MM-dd"
+            @change="dateChange"
+          ></el-date-picker>
+          <el-button type="primary" @click="resetDate">重置日期</el-button>
+          <el-button type="info" @click="exportExl">导出表格</el-button>
+
+          <!-- 表格位置 -->
+          <el-table :data="dataToShow" style="width: 100%" border stripe>
+            <el-table-column type="index"></el-table-column>
+            <el-table-column align="center" prop="create_date" label="申请时间"></el-table-column>
+            <el-table-column align="center" prop="room_id" label="教室号"></el-table-column>
+            <el-table-column align="center" prop="week" label="周数" min-width="50px"></el-table-column>
+            <el-table-column align="center" label="星期数">
+              <template slot-scope="scope">{{scope.row.day | dayForm}}</template>
+            </el-table-column>
+            <el-table-column align="center" prop="classBetween" label="时间段" min-width="100px">
+              <template slot-scope="scope">{{scope.row.classBetween | lessonForm}}</template>
+            </el-table-column>
+            <el-table-column align="center" prop="num" label="人数" min-width="50px"></el-table-column>
+            <el-table-column align="center" prop="tel" label="联系电话" min-width="120px"></el-table-column>
+            <el-table-column align="center" prop="isCheck" label="审核状态" min-width="100px">
+              <template slot-scope="scope">
+                <el-tag type="success" effect="dark" v-if="scope.row.isCheck">审批成功</el-tag>
+                <el-tag type="warning" v-else>审批中</el-tag>
+              </template>
+            </el-table-column>
+          </el-table>
+          <!-- 重置按钮 -->
+        </el-tab-pane>
+      </el-tabs>
+    </el-card>
+  </div>
 </template>
 <script>
 export default {
-  name:'lessontable'
+  name: 'lessontable',
+  data() {
+    return {
+      date: '',
+      fileTemp: null,
+      file: null,
+      da: [],
+      dalen: 0,
+      activeName: 'first',
+      test: '2020-02-10',
+      // 假数据
+      orderData: [
+        {
+          week: 1,
+          day: '01',
+          classBetween: '0102',
+          tel: '13888888888',
+          num: '1',
+          isCheck: false,
+          room_id: '10401',
+          order_id: '10401001',
+          create_date: '2020-02-10'
+        },
+        {
+          week: 1,
+          day: '02',
+          classBetween: '0102',
+          tel: '13888888888',
+          num: '1',
+          isCheck: false,
+          room_id: '10401',
+          order_id: '10401002',
+          create_date: '2020-02-11'
+        },
+        {
+          week: 1,
+          day: '03',
+          classBetween: '0102',
+          tel: '13888888888',
+          num: '1',
+          isCheck: false,
+          room_id: '10401',
+          order_id: '10401003',
+          create_date: '2020-02-12'
+        }
+      ],
+      bridgeArr: [],
+      dateArr: null
+    }
+  },
+  computed: {
+    // 展示的表格
+    dataToShow() {
+      if (this.date === '') {
+        return this.orderData
+      } else {
+        return this.dateArr
+      }
+    },
+    // 导出的表格名称
+    exportName() {
+      if (this.data === '') {
+        return '本学期实验室预约情况表'
+      } else {
+        return `${this.date}  实验室预约情况表`
+      }
+    }
+  },
+  methods: {
+    dateChange() {
+      this.orderData.forEach(item => {
+        this.bridgeArr.push(item)
+      })
+      this.dateArr = this.bridgeArr.filter(item => {
+        return item.create_date === this.date
+      })
+    },
+    //上传文件时处理方法
+    handleChange(file, fileList) {
+      this.fileTemp = file.raw
+      if (this.fileTemp) {
+        if (
+          this.fileTemp.type ==
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ||
+          this.fileTemp.type == 'application/vnd.ms-excel'
+        ) {
+          this.importfxx(this.fileTemp)
+        } else {
+          this.$message({
+            type: 'warning',
+            message: '附件格式错误，请删除后重新上传！'
+          })
+        }
+      } else {
+        this.$message({
+          type: 'warning',
+          message: '请上传附件！'
+        })
+      }
+    },
+    //超出最大上传文件数量时的处理方法
+    handleExceed() {
+      this.$message({
+        type: 'warning',
+        message: '超出最大上传文件数量的限制！'
+      })
+      return
+    },
+    //移除文件的操作方法
+    handleRemove(file, fileList) {
+      this.fileTemp = null
+    },
+    // 读取方法
+    importfxx(obj) {
+      let _this = this
+      let inputDOM = this.$refs.inputer
+      // 通过DOM取文件数据
+
+      this.file = event.currentTarget.files[0]
+
+      var rABS = false //是否将文件读取为二进制字符串
+      var f = this.file
+
+      var reader = new FileReader()
+      //if (!FileReader.prototype.readAsBinaryString) {
+      FileReader.prototype.readAsBinaryString = function(f) {
+        var binary = ''
+        var rABS = false //是否将文件读取为二进制字符串
+        var pt = this
+        var wb //读取完成的数据
+        var outdata
+        var reader = new FileReader()
+        reader.onload = function(e) {
+          var bytes = new Uint8Array(reader.result)
+          var length = bytes.byteLength
+          for (var i = 0; i < length; i++) {
+            binary += String.fromCharCode(bytes[i])
+          }
+          //此处引入，用于解析excel
+          var XLSX = require('xlsx')
+          if (rABS) {
+            wb = XLSX.read(btoa(fixdata(binary)), {
+              //手动转化
+              type: 'base64'
+            })
+          } else {
+            wb = XLSX.read(binary, {
+              type: 'binary'
+            })
+          }
+          outdata = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]])
+          // 注释
+          //outdata就是读取的数据（不包含标题行即表头，表头会作为对象的下标）
+          //此处可对数据进行处理
+          let arr = []
+          outdata.map(v => {
+            let obj = {}
+            obj.code = v['Code']
+            obj.name = v['Name']
+            obj.pro = v['province']
+            obj.cit = v['city']
+            obj.dis = v['district']
+            arr.push(obj)
+          })
+          _this.da = arr
+          _this.dalen = arr.length
+          // 注释
+          return arr
+        }
+        reader.readAsArrayBuffer(f)
+      }
+      if (rABS) {
+        reader.readAsArrayBuffer(f)
+      } else {
+        reader.readAsBinaryString(f)
+      }
+    },
+    // 重置时间
+    resetDate() {
+      this.date = ''
+    },
+    // 导出表格
+    exportExl() {
+      require.ensure([], () => {
+        const { export_json_to_excel } = require('@/excel/Export2Excel')
+        const tHeader = [
+          '申请时间',
+          '教室号',
+          '周数',
+          '星期数',
+          '时间段',
+          '人数',
+          '联系电话',
+          '审核状态'
+        ] // 设置Excel的表格第一行的标题
+        const filterVal = [
+          'create_date',
+          'room_id',
+          'week',
+          'day',
+          'classBetween',
+          'num',
+          'tel',
+          'isCheck'
+        ] // index、nickName、name是tableData里对象的属性
+        const list = this.dataToShow //把data里的tableData存到list
+        const data = this.formatJson(filterVal, list)
+        export_json_to_excel(tHeader, data, this.exportName) //导出Excel 文件名
+      })
+    },
+    // 导出表格子方法
+    formatJson(filterVal, jsonData) {
+      return jsonData.map(v => filterVal.map(j => v[j]))
+    }
+  }
 }
 </script>
 <style scoped>
-
+.el-tab-pane {
+  text-align: center;
+}
+.el-alert {
+  margin: 20px;
+}
+.el-table {
+  margin: 15px 0px;
+}
+.el-button {
+  margin-left: 15px;
+}
 </style>

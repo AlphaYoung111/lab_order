@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+const Login = ()=>import('@/components/Login')
 const Home = () => import('@/views/Home')
 const Student = () => import('@/views/common/Student')
 const AllCate = () => import('@/views/common/childCom/AllCate')
@@ -12,7 +13,17 @@ const LessonTable = () => import('@/views/admin/childCom/LessonTable')
 
 Vue.use(VueRouter)
 
-const routes = [{
+const routes = [
+  {
+    path: '',
+    redirect:'/login'
+  },
+  {
+    path: '/login',
+    component:Login
+  },
+  
+  {
     path: '/common',
     name: 'student',
     component: Student,
@@ -43,7 +54,7 @@ const routes = [{
     ]
   },
   {
-    path: '/',
+    path: '/admin',
     component: Admin,
     children: [{
         path: '',

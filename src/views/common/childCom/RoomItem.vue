@@ -106,6 +106,7 @@ export default {
         tel: null,
         isCheck: false,
         room_id:null,
+        create_date:''
       },
       totalWeek: 5,
       orderFormRules: {
@@ -181,6 +182,8 @@ export default {
         const item = this.orderForm
         this.$store.dispatch('addOrder', item)
         this.$message.success('申请成功！请等待审批。')
+        const today = this.getCreateDate()
+        this.orderForm.create_date = today
         setTimeout(() => {
           this.$router.push('/common/all_cate')
         }, 2000)
@@ -189,6 +192,15 @@ export default {
     // 重置表单
     resetForm() {
       this.$refs.orderFormRef.resetFields()
+    },
+    // 获取创建预约的时间
+    getCreateDate(){
+      let today = ''
+      let date = new Date()
+      let y = date.getFullYear()
+      let m = (date.getMonth()+1+'').padStart(2,'0')
+      let d = (date.getDay()+'').padStart(2,'0')
+      return today = `${y}-${m}-${d}`
     }
   }
 }

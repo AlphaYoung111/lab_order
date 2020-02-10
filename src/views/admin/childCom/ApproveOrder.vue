@@ -6,6 +6,7 @@
           <!-- 待审批 -->
           <el-table :data="orderData" style="width: 100%" border stripe>
             <el-table-column type="index"></el-table-column>
+            <el-table-column align="center" prop="create_date" label="申请时间"></el-table-column>
             <el-table-column align="center" prop="room_id" label="教室号"></el-table-column>
             <el-table-column align="center" prop="week" label="周数"></el-table-column>
             <el-table-column align="center" label="星期数">
@@ -33,6 +34,7 @@
           <!-- 审批完成 -->
           <el-table :data="agreeData" style="width: 100%" border stripe>
             <el-table-column type="index"></el-table-column>
+            <el-table-column align="center" prop="create_date" label="申请时间"></el-table-column>
             <el-table-column align="center" prop="room_id" label="教室号"></el-table-column>
             <el-table-column align="center" prop="week" label="周数"></el-table-column>
             <el-table-column align="center" label="星期数">
@@ -69,7 +71,8 @@ export default {
           num: '1',
           isCheck: false,
           room_id: '10401',
-          order_id: '10401001'
+          order_id: '10401001',
+          create_date:'2020-02-10'
         },
         {
           week: 1,
@@ -79,7 +82,8 @@ export default {
           num: '1',
           isCheck: false,
           room_id: '10401',
-          order_id: '10401002'
+          order_id: '10401002',
+          create_date:'2020-02-11'
         },
         {
           week: 1,
@@ -89,7 +93,8 @@ export default {
           num: '1',
           isCheck: false,
           room_id: '10401',
-          order_id: '10401003'
+          order_id: '10401003',
+          create_date:'2020-02-12'
         }
       ],
       agreeData: []

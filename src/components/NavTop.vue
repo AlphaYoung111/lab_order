@@ -3,19 +3,24 @@
     <el-row class="nav_place">
       <el-col style="margin-left:80px">
         <div class="title">
-          <img src="@/assets/img/logo.png" alt />
+          <img src="https://i.loli.net/2020/02/10/R1GJn4OtDybrXd7.png" alt />
           <div class="title_text">实验室预约系统</div>
         </div>
       </el-col>
       <el-col class="exit_button" :span="3">
-        <el-button type="danger">退出登录</el-button>
+        <el-button type="danger" @click="toLogin">退出登录</el-button>
       </el-col>
     </el-row>
   </div>
 </template>
 <script>
 export default {
-  name: "navtop"
+  name: "navtop",
+  methods:{
+    toLogin(){
+      this.$router.push('/login')
+    }
+  }
 };
 </script>
 <style scoped>

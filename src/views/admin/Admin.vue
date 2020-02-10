@@ -17,14 +17,14 @@
           <i class="el-icon-menu"></i>
           <span>实验申请</span>
         </template>
-        <el-menu-item index="/approve_order">我的审批</el-menu-item>
+        <el-menu-item index="/admin/approve_order">我的审批</el-menu-item>
       </el-submenu>
       <el-submenu index="2">
         <template slot="title">
           <i class="el-icon-user"></i>
-          <span>课表相关</span>
+          <span>数据相关</span>
         </template>
-        <el-menu-item index="/lesson_table">课表管理</el-menu-item>
+        <el-menu-item index="/admin/lesson_table">数据管理</el-menu-item>
       </el-submenu>
     </el-menu>
     <!-- 右边显示区域 -->

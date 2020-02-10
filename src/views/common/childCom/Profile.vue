@@ -35,6 +35,7 @@
         </span>
         <!-- 我的预约 -->
         <el-table :data="order" style="width: 100%" border stripe>
+          <el-table-column align="center" prop="create_date" label="申请时间" min-width="120px"></el-table-column>
           <el-table-column align="center" prop="room_id" label="教室号"></el-table-column>
           <el-table-column align="center" prop="week" label="周数"></el-table-column>
           <el-table-column align="center" label="星期数">
@@ -116,7 +117,7 @@ export default {
 </script>
 <style scoped>
 .el-tabs {
-  margin: 40px 60px;
+  margin: 20px 30px;
   font-size: 20px;
 }
 .el-tabs__item {
