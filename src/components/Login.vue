@@ -1,7 +1,7 @@
 <template>
   <div class="login">
     <div class="bg_img">
-      <img src="https://i.loli.net/2020/02/10/vzTxjYUtg3iJM7X.jpg" alt />
+      <img src="https://ae01.alicdn.com/kf/Hb256065b233c46a4b55a4dc9a42749f5n.jpg" alt />
       <el-card class="login_place">
         <!-- 表单 -->
         <el-form
@@ -65,6 +65,7 @@ export default {
 .login {
   width: 100vw;
   height: 100vh;
+  overflow: hidden;
   /* flex-direction: column; */
   display: flex;
   justify-content: center;
@@ -92,7 +93,7 @@ export default {
 }
 .el-card{
   position: absolute;
-  top: 100%;
+  top: 90%;
   left: 50%;
   transform: translate(-50%,-50%);
   background-color: rgb(243, 109, 109);

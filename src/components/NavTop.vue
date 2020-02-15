@@ -3,7 +3,7 @@
     <el-row class="nav_place">
       <el-col style="margin-left:80px">
         <div class="title">
-          <img src="https://i.loli.net/2020/02/10/R1GJn4OtDybrXd7.png" alt />
+          <img src="https://ae01.alicdn.com/kf/Hb34ff4d68dc64554bdd9130a2014b82c3.png" alt />
           <div class="title_text">实验室预约系统</div>
         </div>
       </el-col>
