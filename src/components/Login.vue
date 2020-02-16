@@ -11,16 +11,15 @@
           label-width="100px"
           class="demo-ruleForm"
         >
-          <el-form-item label="用户名" prop="username" label-width="120px" label-position="right">
-            <el-input v-model="loginForm.username"></el-input>
+          <el-form-item label="用户名" prop="account" label-width="120px" label-position="right">
+            <el-input v-model.number="loginForm.account" clearable></el-input>
           </el-form-item>
           <el-form-item label="密码" prop="password" label-width="120px" label-position="right">
-            <el-input type="password" v-model="loginForm.password"></el-input>
+            <el-input type="password" v-model="loginForm.password" clearable></el-input>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="loginUp">登录</el-button>
             <el-button type="info" @click="resetForm">重置</el-button>
-            
           </el-form-item>
         </el-form>
       </el-card>
@@ -33,7 +32,7 @@ export default {
   data() {
     return {
       loginForm: {
-        username: '',
+        account: null,
         password: ''
       },
       loginFormRules: {
@@ -44,20 +43,36 @@ export default {
       }
     }
   },
-  methods:{
-    loginUp(){
-      this.$refs.loginFormRef.validate(valid=>{
-        if(!valid){
+  created(){
+    window.sessionStorage.clear()
+  },
+  methods: {
+    loginUp() {
+      this.$refs.loginFormRef.validate(valid => {
+        if (!valid) {
           return this.$message.error('请正确填写登录信息')
         }
-        this.$message.success('登录成功')
-        this.$router.push('/common')
+        this.$http.post('/login', this.loginForm).then(res => {
+          if (res.data.login_status === false)
+            return this.$message.error('账号或密码不正确')
+          const token = res.data._id
+          const username = res.data.username
+          const isAdmin = res.data.isAdmin
+          window.sessionStorage.setItem('token', token)
+          window.sessionStorage.setItem('username', username)
+          window.sessionStorage.setItem('isAdmin', isAdmin)
+          this.$message.success('登录成功')
+          if (isAdmin === true) {
+            this.$router.push('/admin')
+          } else {
+            this.$router.push('/common')
+          }
+        })
       })
     },
-    resetForm(){
+    resetForm() {
       this.$refs.loginFormRef.resetFields()
     }
-    
   }
 }
 </script>
@@ -82,7 +97,6 @@ export default {
   width: 100%;
   height: auto;
   opacity: 0.7;
-
 }
 .el-form {
   width: 80%;
@@ -91,21 +105,21 @@ export default {
 .el-input {
   width: 90%;
 }
-.el-card{
+.el-card {
   position: absolute;
   top: 90%;
   left: 50%;
-  transform: translate(-50%,-50%);
+  transform: translate(-50%, -50%);
   background-color: rgb(243, 109, 109);
   width: 50%;
   margin: 15px auto;
   border-radius: 25px;
-  
 }
-.el-form-item{
+.el-form-item {
   text-align: center;
 }
-.el-button{
+.el-button {
   margin-right: 20px;
 }
+
 </style>

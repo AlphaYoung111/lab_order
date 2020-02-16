@@ -1,6 +1,5 @@
 <template>
   <div class="all_place">
-    <el-card>
       <el-tabs type="border-card">
         <el-tab-pane label="待审批">
           <!-- 待审批 -->
@@ -12,12 +11,12 @@
             <el-table-column align="center" label="星期数">
               <template slot-scope="scope">{{scope.row.day | dayForm}}</template>
             </el-table-column>
-            <el-table-column align="center" prop="classBetween" label="时间段" min-width="150px">
+            <el-table-column align="center" prop="classBetween" label="时间段" min-width="120px">
               <template slot-scope="scope">{{scope.row.classBetween | lessonForm}}</template>
             </el-table-column>
             <el-table-column align="center" prop="num" label="人数"></el-table-column>
-            <el-table-column align="center" prop="tel" label="联系电话" min-width="150px"></el-table-column>
-            <el-table-column align="center" prop="isCheck" label="审核状态" min-width="150px">
+            <el-table-column align="center" prop="tel" label="联系电话" min-width="100px"></el-table-column>
+            <el-table-column align="center" prop="isCheck" label="审核状态" min-width="90px">
               <template slot-scope="scope">
                 <el-tag type="success" effect="dark" v-if="scope.row.isCheck">审批成功</el-tag>
                 <el-tag type="warning" v-else>审批中</el-tag>
@@ -54,7 +53,7 @@
           </el-table>
         </el-tab-pane>
       </el-tabs>
-    </el-card>
+
   </div>
 </template>
 <script>

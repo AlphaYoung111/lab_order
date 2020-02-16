@@ -1,12 +1,12 @@
 <template>
   <div class="detail_room">
     <el-row :gutter="10">
-      <el-col :span="6" v-for="item in roomData" :key="item.id" >
-       <div @click="goRoomItem(item.id)">
+      <el-col :span="6" v-for="item in roomData" :key="item._id" >
+       <div @click="goRoomItem(item.room_id)">
         <el-card shadow="hover" >
           <div class="building">{{item.building}}</div>
-          <div class="room">{{item.room}}</div>
-          <div class="number">剩余/总量 &nbsp;&nbsp; {{item.remaing}}/{{item.total}}</div>
+          <div class="room">{{item.room_place}}</div>
+          <div class="number">剩余/总量 &nbsp;&nbsp; {{item.seat_left}}/{{item.total}}</div>
         </el-card>
         </div>
       </el-col>
@@ -21,26 +21,20 @@ export default {
   data() {
     return {
       cate_id:null,
-      roomData:[
-        {id:10100,building:'正新大厦',room:'401',total:30,remaing:10},
-        {id:10101,building:'厚德大厦',room:'402',total:30,remaing:20},
-        {id:10102,building:'日新大厦',room:'403',total:30,remaing:30},
-        {id:10103,building:'明德大厦',room:'404',total:30,remaing:10},
-        {id:10104,building:'正新大厦',room:'405',total:30,remaing:5},
-        {id:10105,building:'正新大厦',room:'406',total:30,remaing:5},
-        {id:10106,building:'正新大厦',room:'407',total:30,remaing:5},
-        {id:10107,building:'正新大厦',room:'408',total:30,remaing:5},
-        {id:10108,building:'正新大厦',room:'409',total:30,remaing:5},
-      ]
+      roomData:[]
     }
   },
   created(){
     this.cate_id = this.$route.params.id
+    console.log(this.cate_id);
+    
     this.getClassRoom()
   },
   methods:{
     getClassRoom(){
-      // console.log(this.$route);
+      this.$http.get(`/room/${this.cate_id}`).then(res=>{
+        this.roomData = res.data
+      })
       
     },
     //进入详情页

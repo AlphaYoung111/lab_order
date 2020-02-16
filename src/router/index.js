@@ -56,6 +56,12 @@ const routes = [
   {
     path: '/admin',
     component: Admin,
+    // 管理员界面禁止
+    beforeEnter: (to, from, next) => {
+      const isAdmin = window.sessionStorage.getItem('isAdmin')
+      if (!isAdmin) return next('/login')
+      next()
+    },
     children: [{
         path: '',
         redirect: 'home'
@@ -80,6 +86,16 @@ const router = new VueRouter({
   // mode: 'history',
   // base: process.env.BASE_URL,
   routes
+})
+
+router.beforeEach((to, from, next) => {
+  //从登录页面来的
+  if (to.path === '/login') return next()
+  //从其他页面来的
+  const haveToken = window.sessionStorage.getItem('token')
+  if (!haveToken) return next('/login')
+  next()
+
 })
 
 export default router

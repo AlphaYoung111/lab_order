@@ -3,9 +3,9 @@
     <el-card class="cate_place">
       <div class="cate_title">实验室分类</div>
       <el-row>
-        <el-col :span="6" v-for="item in all_cate" :key="item.id">
+        <el-col :span="6" v-for="item in all_cate" :key="item.cate_id">
           <el-card shadow="hover">
-            <div @click="goDetailRoom(item.id,item.name)">{{item.name}}</div>
+            <div @click="goDetailRoom(item.cate_id)" class="cate_name">{{item.cate_name}}</div>
           </el-card>
         </el-col>
       </el-row>
@@ -17,19 +17,22 @@ export default {
   name: 'allcate',
   data() {
     return {
-      all_cate: [
-        { id: 10, name: '实验室一' },
-        { id: 11, name: '实验室二' },
-        { id: 12, name: '实验室三' },
-        { id: 13, name: '实验室四' },
-        { id: 14, name: '实验室五' },
-      ]
+      all_cate: []
     }
+  },
+  created() {
+    this.getAllCate()
   },
   methods: {
     // 跳转指定教室的方法
-    goDetailRoom(id) { 
+    goDetailRoom(id) {
       this.$router.push('/common/detail_room/' + id)
+    },
+    // 获取所有分类数据
+    getAllCate() {
+      this.$http.get('/all_cate').then(res => {
+        this.all_cate = res.data
+      })
     }
   }
 }
@@ -37,7 +40,7 @@ export default {
 <style scoped>
 .all_cate {
   text-align: center;
-  margin: 60px 100px;
+  margin: 60px 30px;
 }
 .el-row {
   margin-top: 20px;
@@ -46,10 +49,12 @@ export default {
   margin: 10px;
   height: 220px;
   background-color: #d9ecff;
-  line-height: 140px;
+  line-height: 40px;
   font-size: 30px;
   cursor: pointer;
   user-select: none;
+  display: flex;
+  align-items: center;
 }
 .cate_place {
   background-color: #ebeef5;
