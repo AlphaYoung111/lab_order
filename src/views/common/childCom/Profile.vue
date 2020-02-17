@@ -34,9 +34,9 @@
           <i class="el-icon-bell"></i> 我的预约
         </span>
         <!-- 我的预约 -->
-        <el-table :data="order" style="width: 100%" border stripe>
+        <el-table :data="myOrderData" style="width: 100%" border stripe max-height="600">
           <el-table-column align="center" prop="create_date" label="申请时间" min-width="120px"></el-table-column>
-          <el-table-column align="center" prop="room_id" label="教室号"></el-table-column>
+          <el-table-column align="center" prop="room_place" label="教室号"></el-table-column>
           <el-table-column align="center" prop="week" label="周数"></el-table-column>
           <el-table-column align="center" label="星期数">
             <template slot-scope="scope">{{scope.row.day | dayForm}}</template>
@@ -78,6 +78,7 @@ export default {
         password: '',
         confirmPw: ''
       },
+      myOrderData: null,
       // 修改密码验证规则
       accountFormRule: {
         password: [
@@ -95,8 +96,12 @@ export default {
       }
     }
   },
-  computed: {
-    ...mapState(['order'])
+  created() {
+    const account = window.sessionStorage.getItem('account')
+    this.accountForm.account = account
+    console.log(account)
+
+    this.getMyOrder()
   },
   methods: {
     // 确认修改密码
@@ -105,12 +110,19 @@ export default {
         if (!valid) {
           return this.$message.error('请修改错误项')
         }
+        this.$http.put('/reset_pw', this.accountForm)
         this.$message.success('修改密码成功')
       })
     },
     // 重置表单
     resetForm() {
       this.$refs.accountFormRef.resetFields()
+    },
+    // 获取个人的预定信息
+    getMyOrder() {
+      this.$http.get(`/order/${Number(this.accountForm.account)}`).then(res => {
+        this.myOrderData = res.data
+      })
     }
   }
 }

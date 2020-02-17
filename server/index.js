@@ -9,7 +9,10 @@ app.use(express.json())
 mongoose.connect('mongodb://localhost:27017/lab-order', {
   useCreateIndex: true,
   useNewUrlParser: true,
-  useFindAndModify: true
+  useFindAndModify: true,
+
+  // useUnifiedTopology: true
+
 })
 
 app.get('/', (req, res) => {
@@ -29,42 +32,99 @@ const AccountData = mongoose.model('AccountData', new mongoose.Schema({
   },
   isAdmin: {
     type: Boolean
+  },
+  isTeacher: {
+    type: Boolean
   }
 }))
 
+// 分类数据
 const AllCate = mongoose.model('AllCate', new mongoose.Schema({
-  cate_id: { type: String },
-  cate_name:{type:String}
+  cate_id: {
+    type: String
+  },
+  cate_name: {
+    type: String
+  }
 }))
 
+// 实验室信息数据
 const Room = mongoose.model('Room', new mongoose.Schema({
-  room_id: { type: String },
-  cate_id: { type: String },
-  building: { type: String },
-  room_place: { type: String },
-  total: { type: Number },
-  seat_left:{type:Number}
+  room_id: {
+    type: String
+  },
+  cate_id: {
+    type: String
+  },
+  building: {
+    type: String
+  },
+  room_place: {
+    type: String
+  },
+  total: {
+    type: Number
+  },
+  seat_left: {
+    type: Number
+  }
 }))
 
+// 预约时间
+const FreeTime = mongoose.model('FreeTime', new mongoose.Schema({
+  week: {
+    type: String
+  },
+  day_options: {
+    type: Array
+  },
+  class_options: {
+    type: Object
+  },
 
-// AccountData.insertMany([{
-//   account: 1902120138,
-//   username: '章长浩',
-//   password: '123456',
-//   isAdmin: false
-// }, ])
+}))
 
-// AllCate.insertMany([
-//   {cate_id:'10',cate_name:'单片机/EDA实验室'},
-//   {cate_id:'11',cate_name:'数字电路实验室'},
-//   {cate_id:'12',cate_name:'嵌入式/DSP实验室'},
-// ])
+// 预约信息
+const Order = mongoose.model('Order', new mongoose.Schema({
+  week: {
+    type: String
+  },
+  day: {
+    type: String
+  },
+  classBetween: {
+    type: String
+  },
+  num: {
+    type: String
+  },
+  tel: {
+    type: String
+  },
+  isCheck: {
+    type: Boolean
+  },
+  room_id: {
+    type: String
+  },
+  create_date: {
+    type: String
+  },
+  isTeacher: {
+    type: Boolean
+  },
+  username: {
+    type: String
+  },
+  account: {
+    type: Number
+  },
+  room_place: {
+    type: String
+  }
 
-// Room.insertMany([
-//   {cate_id:'10',room_id:'10100',building:'明德大厦',room_place:'330',total:21,seat_left:21},
-//   {cate_id:'11',room_id:'11100',building:'明德大厦',room_place:'323',total:50,seat_left:50},
-//   {cate_id:'12',room_id:'12100',building:'明德大厦',room_place:'420',total:21,seat_left:21},
-// ])
+}))
+
 
 app.get('/account', async (req, res) => {
   res.send(await AccountData.find())
@@ -74,12 +134,29 @@ app.get('/account', async (req, res) => {
 app.post('/api/login', async (req, res) => {
   const acc = req.body.account
   const pw = req.body.password
-  const user = await AccountData.findOne({ account: acc, password: pw })
+  const user = await AccountData.findOne({
+    account: acc,
+    password: pw
+  })
   if (user) {
-     res.send(user)
+    res.send(user)
   } else {
-    res.send({login_status:false})
+    res.send({
+      login_status: false
+    })
   }
+})
+
+// 用户修改密码
+app.put('/api/reset_pw', async (req, res) => {
+  const acc = Number(req.body.account)
+  const pw = req.body.password
+  const user = await AccountData.findOne({
+    account: acc
+  })
+  user.password = pw
+  user.save()
+  res.send(user)
 })
 
 // 实验室分类数据接口
@@ -90,22 +167,74 @@ app.get('/api/all_cate', async (req, res) => {
 
 // 具体教室数据接口
 app.get('/api/room/:id', async (req, res) => {
-  const data = await Room.find({cate_id:req.params.id})
+  const data = await Room.find({
+    cate_id: req.params.id
+  })
   res.send(data)
 })
 
+// 具体预约时间接口
+app.get('/api/free_time/:week', async (req, res) => {
+  const data = await FreeTime.find({
+    week: req.params.week
+  })
+  res.send(data)
+})
 
+// 创建预约订单接口
+app.post('/api/order', async (req, res) => {
+  const data = req.body
+  await Order.create(data)
+  res.send(data)
+})
 
+// 学生获取订单数据的接口
+app.get('/api/order/:id', async (req, res) => {
+  const data = await Order.find({
+    account: req.params.id
+  })
+  res.send(data)
+})
 
+// 管理员获取未审批订单
+app.get('/api/order_to_check', async (req, res) => {
+  const data = await Order.find({
+    isCheck: false
+  })
+  res.send(data)
+})
 
+// 管理员通过订单id审批接口
+app.put('/api/check_order/:id', async (req, res) => {
+  const item = await Order.findOne({
+    _id: req.params.id
+  })
+  item.isCheck = true
+  await item.save()
+  res.send(item)
+})
 
+// 管理员获取所有审批后的接口
+app.get('/api/agree_order', async (req, res) => {
+  const item = await Order.find({
+    isCheck: true
+  })
+  res.send(item)
+})
 
+// 获取指定日期的订单的接口
+app.get('/api/date_order/:date', async (req, res) => {
+  const item = await Order.find({
+    create_date: req.params.date
+  })
+  res.send(item)
+})
 
-
-
-
-
-
+// 获取全部订单
+app.get('/api/all_order', async (req, res) => {
+  const item = await Order.find()
+  res.send(item)
+})
 
 app.listen(3330, () => {
   console.log("http://localhost:3330");

@@ -46,3 +46,14 @@ vue.filter('lessonForm', (val) => {
 
   }
 })
+
+// Vue.filter('roomForma', (val) => {
+//   switch (val) {
+//     case value:
+      
+//       break;
+  
+//     default:
+//       break;
+//   }
+// })

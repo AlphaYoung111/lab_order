@@ -57,11 +57,12 @@ export default {
 }
 </script>
 <style scoped>
+
 .admin {
   width: 100%;
   height: 100%;
   background-color: #eee;
-  overflow: hidden;
+  /* overflow: hidden; */
   /* display:flex; */
 }
 .el-menu {

@@ -43,7 +43,7 @@ export default {
       }
     }
   },
-  created(){
+  created() {
     window.sessionStorage.clear()
   },
   methods: {
@@ -57,11 +57,15 @@ export default {
             return this.$message.error('账号或密码不正确')
           const token = res.data._id
           const username = res.data.username
+          const account = res.data.account
           const isAdmin = res.data.isAdmin
+          const isTeacher = res.data.isTeacher
           window.sessionStorage.setItem('token', token)
           window.sessionStorage.setItem('username', username)
           window.sessionStorage.setItem('isAdmin', isAdmin)
-          this.$message.success('登录成功')
+          window.sessionStorage.setItem('isTeacher', isTeacher)
+          window.sessionStorage.setItem('account', account)
+          this.$message.success(`登陆成功，欢迎回来   ${username} !`)
           if (isAdmin === true) {
             this.$router.push('/admin')
           } else {
@@ -121,5 +125,4 @@ export default {
 .el-button {
   margin-right: 20px;
 }
-
 </style>

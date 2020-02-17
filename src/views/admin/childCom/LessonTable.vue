@@ -33,10 +33,12 @@
           <el-button type="info" @click="exportExl">导出表格</el-button>
 
           <!-- 表格位置 -->
-          <el-table :data="dataToShow" style="width: 100%" border stripe>
+          <el-table :data="dataToShow" style="width: 100%" border stripe max-height="550">
             <el-table-column type="index"></el-table-column>
             <el-table-column align="center" prop="create_date" label="申请时间"></el-table-column>
-            <el-table-column align="center" prop="room_id" label="教室号"></el-table-column>
+            <el-table-column align="center" prop="room_place" label="教室号"></el-table-column>
+            <el-table-column align="center" prop="username" label="申请人"></el-table-column>
+            <el-table-column align="center" prop="account" label="学号"></el-table-column>
             <el-table-column align="center" prop="week" label="周数" min-width="50px"></el-table-column>
             <el-table-column align="center" label="星期数">
               <template slot-scope="scope">{{scope.row.day | dayForm}}</template>
@@ -72,41 +74,7 @@ export default {
       activeName: 'first',
       test: '2020-02-10',
       // 假数据
-      orderData: [
-        {
-          week: 1,
-          day: '01',
-          classBetween: '0102',
-          tel: '13888888888',
-          num: '1',
-          isCheck: false,
-          room_id: '10401',
-          order_id: '10401001',
-          create_date: '2020-02-10'
-        },
-        {
-          week: 1,
-          day: '02',
-          classBetween: '0102',
-          tel: '13888888888',
-          num: '1',
-          isCheck: false,
-          room_id: '10401',
-          order_id: '10401002',
-          create_date: '2020-02-11'
-        },
-        {
-          week: 1,
-          day: '03',
-          classBetween: '0102',
-          tel: '13888888888',
-          num: '1',
-          isCheck: false,
-          room_id: '10401',
-          order_id: '10401003',
-          create_date: '2020-02-12'
-        }
-      ],
+      orderData: [],
       bridgeArr: [],
       dateArr: null
     }
@@ -129,13 +97,19 @@ export default {
       }
     }
   },
+  created(){
+    this.getAgreeData()
+  },
   methods: {
     dateChange() {
-      this.orderData.forEach(item => {
-        this.bridgeArr.push(item)
+      this.$http.get(`/date_order/${this.date}`).then(res => {
+        this.dateArr = res.data
       })
-      this.dateArr = this.bridgeArr.filter(item => {
-        return item.create_date === this.date
+    },
+    // 获取所有的订单
+    getAgreeData() {
+      this.$http.get('/all_order').then(res => {
+        this.orderData = res.data
       })
     },
     //上传文件时处理方法
@@ -249,6 +223,8 @@ export default {
         const tHeader = [
           '申请时间',
           '教室号',
+          '申请人',
+          '学号',
           '周数',
           '星期数',
           '时间段',
@@ -258,7 +234,9 @@ export default {
         ] // 设置Excel的表格第一行的标题
         const filterVal = [
           'create_date',
-          'room_id',
+          'room_place',
+          'username',
+          'account',
           'week',
           'day',
           'classBetween',

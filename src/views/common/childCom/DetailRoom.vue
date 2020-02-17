@@ -2,7 +2,7 @@
   <div class="detail_room">
     <el-row :gutter="10">
       <el-col :span="6" v-for="item in roomData" :key="item._id" >
-       <div @click="goRoomItem(item.room_id)">
+       <div @click="goRoomItem(item.room_id,item.building,item.room_place)">
         <el-card shadow="hover" >
           <div class="building">{{item.building}}</div>
           <div class="room">{{item.room_place}}</div>
@@ -26,8 +26,6 @@ export default {
   },
   created(){
     this.cate_id = this.$route.params.id
-    console.log(this.cate_id);
-    
     this.getClassRoom()
   },
   methods:{
@@ -38,7 +36,9 @@ export default {
       
     },
     //进入详情页
-    goRoomItem(id){
+    goRoomItem(id,b,p){
+      const building = window.sessionStorage.setItem('building',b)
+      const room_place = window.sessionStorage.setItem('room_place',p)
       this.$router.push('/common/room_item/'+id)
     }
   }

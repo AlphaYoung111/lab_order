@@ -30,6 +30,8 @@ export default {
     },
     // 获取所有分类数据
     getAllCate() {
+      window.sessionStorage.removeItem('building')
+      window.sessionStorage.removeItem('room_place')
       this.$http.get('/all_cate').then(res => {
         this.all_cate = res.data
       })

@@ -2,6 +2,7 @@
   <div>
     <el-card>
       <el-alert title="提交成功后，会自动跳转实验室分类界面" type="info" center show-icon :closable="false"></el-alert>
+      <el-alert title="为了保证数据准确，请按照表格顺序进行填写" type="warning" center show-icon :closable="false"></el-alert>
       <!-- 验证表单 -->
       <el-form
         :model="orderForm"
@@ -9,17 +10,17 @@
         ref="orderFormRef"
         label-width="160px"
         class="demo-ruleForm"
-        label-position="right"
+        label-position="left"
       >
         <!-- 周数 -->
         <el-form-item label="本学期第几周" prop="week">
-          <el-input v-model.number="orderForm.week" clearable></el-input>
+          <el-input v-model.number="orderForm.week" clearable @change="weekTypeIn"></el-input>
         </el-form-item>
         <!-- 星期 -->
         <el-form-item label="星期几" prop="day">
           <el-select v-model="orderForm.day" placeholder="请选择" @change="daySelect">
             <el-option
-              v-for="(item,index) in options"
+              v-for="(item,index) in dayOptions"
               :key="index"
               :label="item.label"
               :value="item.value"
@@ -105,10 +106,13 @@ export default {
         num: null,
         tel: null,
         isCheck: false,
-        room_id:null,
-        create_date:''
+        room_id: null,
+        create_date: '',
+        username: null,
+        account: null,
+        room_place: null
       },
-      totalWeek: 5,
+      totalWeek: 20,
       orderFormRules: {
         week: [
           {
@@ -131,24 +135,6 @@ export default {
           }
         ]
       },
-      // 星期选项数据
-      options: [
-        { value: '01', label: '星期一' },
-        { value: '02', label: '星期二' },
-        { value: '03', label: '星期三' },
-        { value: '04', label: '星期四' },
-        { value: '05', label: '星期五' },
-        { value: '06', label: '星期六' },
-        { value: '07', label: '星期日' }
-      ],
-      //节数选项数据
-      classOptions: [
-        { value: '0102', label: '第 1 ~ 2 节课' },
-        { value: '0304', label: '第 3 ~ 4 节课' },
-        { value: '0506', label: '第 5 ~ 6 节课' },
-        { value: '0708', label: '第 7 ~ 8 节课' },
-        { value: '0911', label: '第 9 ~ 11 节课' }
-      ],
       // 学生人数选项
       stuChoice: [
         { value: '1', label: '1' },
@@ -159,19 +145,37 @@ export default {
       teaChoice: [
         { value: '5', label: '5' },
         { value: '99', label: '全班' }
-      ]
+      ],
+      // 具体周数的详细数据
+      dayOptions: [],
+      classData: null,
+      classOptions: null
     }
   },
   created() {
     this.getRoomItem()
+    const account = window.sessionStorage.getItem('account')
+    this.orderForm.account = account
   },
   methods: {
     ...mapActions,
     getRoomItem() {
       this.orderForm.room_id = this.$route.params.id
+      const isTeacher = window.sessionStorage.getItem('isTeacher')
+      if (isTeacher === 'false') return
+      this.orderForm.isTeacher = true
     },
+    // 输入具体周数后
+    weekTypeIn() {
+      this.$http.get('/free_time/' + this.orderForm.week).then(res => {
+        this.dayOptions = res.data[0].day_options
+        this.classData = res.data[0].class_options
+      })
+    },
+    // 选择星期几
     daySelect() {
-      // console.log(this.orderForm.day)
+      const key = `day${this.orderForm.day}`
+      this.classOptions = this.classData[`${key}`]
     },
     // 提交申请
     sendOrder() {
@@ -179,14 +183,23 @@ export default {
         if (!valid) {
           return this.$message.error('请修改报错选项')
         }
-        const item = this.orderForm
-        this.$store.dispatch('addOrder', item)
-        this.$message.success('申请成功！请等待审批。')
-        const today = this.getCreateDate()
-        this.orderForm.create_date = today
-        setTimeout(() => {
-          this.$router.push('/common/all_cate')
-        }, 2000)
+        this.orderForm.create_date = this.getCreateDate()
+        const username = window.sessionStorage.getItem('username')
+        this.orderForm.username = username
+        const building = window.sessionStorage.getItem('building')
+        const room_place = window.sessionStorage.getItem('room_place')
+        this.orderForm.room_place = building + room_place
+        this.$http.post('/order', this.orderForm).then(res => {
+          if (res.status !== 200) {
+            return this.$message.error('预约失败')
+          }
+          this.$message.success('申请成功！请等待审批。')
+          window.sessionStorage.removeItem('building')
+          window.sessionStorage.removeItem('room_place')
+          setTimeout(() => {
+            this.$router.push('/common/all_cate')
+          }, 2000)
+        })
       })
     },
     // 重置表单
@@ -194,13 +207,14 @@ export default {
       this.$refs.orderFormRef.resetFields()
     },
     // 获取创建预约的时间
-    getCreateDate(){
+    getCreateDate() {
       let today = ''
       let date = new Date()
       let y = date.getFullYear()
-      let m = (date.getMonth()+1+'').padStart(2,'0')
-      let d = (date.getDay()+'').padStart(2,'0')
-      return today = `${y}-${m}-${d}`
+      let m = (date.getMonth() + 1 + '').padStart(2, '0')
+      let d = (date.getDate() + '').padStart(2, '0')
+      today = `${y}-${m}-${d}`
+      return today
     }
   }
 }
@@ -208,7 +222,7 @@ export default {
 <style scoped>
 .el-card {
   margin: 70px auto;
-  width: 80%;
+  width: 95%;
 }
 .el-input {
   width: 300px;
@@ -217,6 +231,10 @@ export default {
   width: 70%;
   height: auto;
   margin: 20px auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   /* border: 1px solid red; */
 }
 .el-form-item {
@@ -227,5 +245,8 @@ export default {
 }
 .el-dialog div {
   text-align: center;
+}
+.el-alert {
+  margin-bottom: 15px;
 }
 </style>
