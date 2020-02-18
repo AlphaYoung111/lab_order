@@ -178,6 +178,7 @@ app.get('/api/free_time/:week', async (req, res) => {
   const data = await FreeTime.find({
     week: req.params.week
   })
+
   res.send(data)
 })
 
@@ -235,6 +236,20 @@ app.get('/api/all_order', async (req, res) => {
   const item = await Order.find()
   res.send(item)
 })
+
+// 教室容量确认的接口
+app.put('/api/check_seat', async (req, res) => {
+  const week = req.body.week
+  const classBetween = req.body.classBetween
+  const day = req.body.day
+  const item = await Order.find({
+    week: week,
+    classBetween: classBetween,
+    day: day
+  })
+  res.send(item)
+})
+
 
 app.listen(3330, () => {
   console.log("http://localhost:3330");

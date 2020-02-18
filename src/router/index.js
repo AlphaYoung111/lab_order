@@ -44,7 +44,7 @@ const routes = [
         component: DetailRoom
       },
       {
-        path: 'room_item/:id',
+        path: 'room_item/:id/:total',
         component: RoomItem
       },
       {

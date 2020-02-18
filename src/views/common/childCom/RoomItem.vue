@@ -29,7 +29,7 @@
         </el-form-item>
         <!-- 节数 -->
         <el-form-item label="具体节数" prop="classBetween">
-          <el-select v-model="orderForm.classBetween" placeholder="请选择">
+          <el-select v-model="orderForm.classBetween" placeholder="请选择" @change="weekSelect">
             <el-option
               v-for="(lesson,i1) in classOptions"
               :key="i1"
@@ -37,6 +37,10 @@
               :value="lesson.value"
             ></el-option>
           </el-select>
+        </el-form-item>
+        <!-- 实验室剩余空位 -->
+        <el-form-item label="剩余空位" label-width="120" v-show="this.orderForm.classBetween!==null">
+          <div class="left_num">{{this.canOrderNum}}</div>
         </el-form-item>
         <!-- 教师选择人数 -->
         <el-form-item label="申请人数" prop="num" v-if="orderForm.isTeacher">
@@ -112,6 +116,7 @@ export default {
         account: null,
         room_place: null
       },
+      total: null,
       totalWeek: 20,
       orderFormRules: {
         week: [
@@ -148,14 +153,27 @@ export default {
       ],
       // 具体周数的详细数据
       dayOptions: [],
+      // 选择周数后的所有实践
       classData: null,
-      classOptions: null
+      // 选择天数后的实践
+      classOptions: null,
+      // 实验室已使用的订单
+      leftData: null,
+      // 已使用的数量
+      canOrderNum: null
     }
   },
   created() {
     this.getRoomItem()
+    this.total = this.$route.params.total
     const account = window.sessionStorage.getItem('account')
     this.orderForm.account = account
+    this.orderForm.create_date = this.getCreateDate()
+    const username = window.sessionStorage.getItem('username')
+    this.orderForm.username = username
+    const building = window.sessionStorage.getItem('building')
+    const room_place = window.sessionStorage.getItem('room_place')
+    this.orderForm.room_place = building + room_place
   },
   methods: {
     ...mapActions,
@@ -177,18 +195,40 @@ export default {
       const key = `day${this.orderForm.day}`
       this.classOptions = this.classData[`${key}`]
     },
+    // 周数选择好后
+    weekSelect() {
+      console.log(this.orderForm.room_id)
+      this.$http.put('/check_seat', this.orderForm).then(res => {
+        console.log(res)
+        const today = this.getCreateDate()
+        const arr_today = today.split('-')
+        const y = Number(arr_today[0])
+        const m = Number(arr_today[1])
+        const d = Number(arr_today[2])
+        this.leftData = res.data.filter(item => {
+          const c_day = item.create_date
+          const arr_c_day = c_day.split('-')
+          const year = Number(arr_c_day[0])
+          const month = Number(arr_c_day[1])
+          const date = Number(arr_c_day[2])
+          return year >= y && month >= m && date >=d 
+        })
+        let used_num = this.leftData.reduce((acc, cur) => {
+          return acc + Number(cur.num)
+        }, 0)
+        if (used_num >= this.total) {
+          this.canOrderNum = 0
+        } else {
+          this.canOrderNum = this.total - used_num
+        }
+      })
+    },
     // 提交申请
     sendOrder() {
       this.$refs.orderFormRef.validate(valid => {
         if (!valid) {
           return this.$message.error('请修改报错选项')
         }
-        this.orderForm.create_date = this.getCreateDate()
-        const username = window.sessionStorage.getItem('username')
-        this.orderForm.username = username
-        const building = window.sessionStorage.getItem('building')
-        const room_place = window.sessionStorage.getItem('room_place')
-        this.orderForm.room_place = building + room_place
         this.$http.post('/order', this.orderForm).then(res => {
           if (res.status !== 200) {
             return this.$message.error('预约失败')
@@ -228,13 +268,9 @@ export default {
   width: 300px;
 }
 .el-form {
-  width: 70%;
+  width: 500px;
   height: auto;
   margin: 20px auto;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
   /* border: 1px solid red; */
 }
 .el-form-item {
@@ -248,5 +284,9 @@ export default {
 }
 .el-alert {
   margin-bottom: 15px;
+}
+.left_num {
+  padding-left: 250px;
+  font-size: 20px;
 }
 </style>

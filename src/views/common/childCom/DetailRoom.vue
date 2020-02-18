@@ -2,11 +2,11 @@
   <div class="detail_room">
     <el-row :gutter="10">
       <el-col :span="6" v-for="item in roomData" :key="item._id" >
-       <div @click="goRoomItem(item.room_id,item.building,item.room_place)">
+       <div @click="goRoomItem(item.room_id,item.building,item.room_place,item.total)">
         <el-card shadow="hover" >
           <div class="building">{{item.building}}</div>
           <div class="room">{{item.room_place}}</div>
-          <div class="number">剩余/总量 &nbsp;&nbsp; {{item.seat_left}}/{{item.total}}</div>
+          <div class="number">总量 &nbsp;&nbsp; {{item.total}}</div>
         </el-card>
         </div>
       </el-col>
@@ -36,10 +36,10 @@ export default {
       
     },
     //进入详情页
-    goRoomItem(id,b,p){
+    goRoomItem(id,b,p,t){
       const building = window.sessionStorage.setItem('building',b)
       const room_place = window.sessionStorage.setItem('room_place',p)
-      this.$router.push('/common/room_item/'+id)
+      this.$router.push(`/common/room_item/${id}/${t}`)
     }
   }
 }

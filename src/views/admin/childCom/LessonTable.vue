@@ -1,24 +1,7 @@
 <template>
   <div>
-    <el-card :body-style="{ padding: '15px' }">
-      <el-tabs v-model="activeName">
-        <el-tab-pane label="上传表格" name="first">
-          <el-alert title="请点击下方按钮，上传人员信息表格" type="info" center :closable="false" show-icon></el-alert>
-          <el-upload
-            class="upload-demo"
-            action
-            :on-change="handleChange"
-            :on-remove="handleRemove"
-            :on-exceed="handleExceed"
-            :limit="1"
-            accept="application/vnd.openxmlformats-    
-        officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
-            :auto-upload="false"
-          >
-            <el-button size="small" type="primary" class="upload_btn">点击上传</el-button>
-          </el-upload>
-        </el-tab-pane>
-        <el-tab-pane label="数据汇总" name="second">
+    <el-card>
+      
           <el-alert title="请选择下方时间，查看该天申请数据" type="info" show-icon center :closable="false"></el-alert>
 
           <!-- 时间选择 -->
@@ -55,9 +38,6 @@
               </template>
             </el-table-column>
           </el-table>
-          <!-- 重置按钮 -->
-        </el-tab-pane>
-      </el-tabs>
     </el-card>
   </div>
 </template>
@@ -97,7 +77,7 @@ export default {
       }
     }
   },
-  created(){
+  created() {
     this.getAgreeData()
   },
   methods: {
@@ -111,41 +91,6 @@ export default {
       this.$http.get('/all_order').then(res => {
         this.orderData = res.data
       })
-    },
-    //上传文件时处理方法
-    handleChange(file, fileList) {
-      this.fileTemp = file.raw
-      if (this.fileTemp) {
-        if (
-          this.fileTemp.type ==
-            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ||
-          this.fileTemp.type == 'application/vnd.ms-excel'
-        ) {
-          this.importfxx(this.fileTemp)
-        } else {
-          this.$message({
-            type: 'warning',
-            message: '附件格式错误，请删除后重新上传！'
-          })
-        }
-      } else {
-        this.$message({
-          type: 'warning',
-          message: '请上传附件！'
-        })
-      }
-    },
-    //超出最大上传文件数量时的处理方法
-    handleExceed() {
-      this.$message({
-        type: 'warning',
-        message: '超出最大上传文件数量的限制！'
-      })
-      return
-    },
-    //移除文件的操作方法
-    handleRemove(file, fileList) {
-      this.fileTemp = null
     },
     // 读取方法
     importfxx(obj) {
