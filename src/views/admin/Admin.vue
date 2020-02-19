@@ -24,7 +24,7 @@
           <i class="el-icon-user"></i>
           <span>数据相关</span>
         </template>
-        <el-menu-item index="/admin/lesson_table">数据管理</el-menu-item>
+        <el-menu-item index="/admin/lesson_table">数据统计</el-menu-item>
       </el-submenu>
     </el-menu>
     <!-- 右边显示区域 -->

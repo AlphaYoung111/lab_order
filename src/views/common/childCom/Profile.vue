@@ -137,7 +137,7 @@ export default {
 }
 .el-form {
   /* border: 1px solid red; */
-  width: 70%;
+  width:600px;
   margin: 10px auto;
   font-size: 20px;
 }
@@ -145,7 +145,7 @@ export default {
   font-size: 20px;
 }
 .el-input {
-  width: 50%;
+  width: 90%;
 }
 .el-table-column {
   min-height: 60px;

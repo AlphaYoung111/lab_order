@@ -199,20 +199,7 @@ export default {
     weekSelect() {
       console.log(this.orderForm.room_id)
       this.$http.put('/check_seat', this.orderForm).then(res => {
-        console.log(res)
-        const today = this.getCreateDate()
-        const arr_today = today.split('-')
-        const y = Number(arr_today[0])
-        const m = Number(arr_today[1])
-        const d = Number(arr_today[2])
-        this.leftData = res.data.filter(item => {
-          const c_day = item.create_date
-          const arr_c_day = c_day.split('-')
-          const year = Number(arr_c_day[0])
-          const month = Number(arr_c_day[1])
-          const date = Number(arr_c_day[2])
-          return year >= y && month >= m && date >=d 
-        })
+        this.leftData = res.data
         let used_num = this.leftData.reduce((acc, cur) => {
           return acc + Number(cur.num)
         }, 0)

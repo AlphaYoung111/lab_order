@@ -57,6 +57,7 @@ export default {
   user-select: none;
   display: flex;
   align-items: center;
+  justify-content: center;
 }
 .cate_place {
   background-color: #ebeef5;
