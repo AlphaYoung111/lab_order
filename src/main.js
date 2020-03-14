@@ -20,7 +20,7 @@ Vue.use(XLSX)
 Vue.config.productionTip = false
 
 Vue.prototype.$http = axios.create({
-  baseURL:'http://localhost:3330/api/'
+  baseURL:'http://localhost:33301/api/'
 })
 
 new Vue({

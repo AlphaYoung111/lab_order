@@ -251,7 +251,7 @@ app.put('/api/check_seat', async (req, res) => {
 })
 
 
-app.listen(3330, () => {
-  console.log("http://localhost:3330");
+app.listen(33301, () => {
+  console.log("http://localhost:33301");
 
 })
