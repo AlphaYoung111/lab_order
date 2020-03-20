@@ -48,8 +48,13 @@
           <el-table-column align="center" prop="tel" label="联系电话" min-width="150px"></el-table-column>
           <el-table-column align="center" prop="isCheck" label="审核状态" min-width="150px">
             <template slot-scope="scope">
-              <el-tag type="success" effect="dark" v-if="scope.row.isCheck">审批成功</el-tag>
+              <el-tag type="info" effect="dark" v-if="scope.row.isCheck">审批成功</el-tag>
               <el-tag type="warning" effect="dark" v-else>审批中</el-tag>
+            </template>
+          </el-table-column>
+          <el-table-column align="center" label="点击取消" fixed="right" width="100px">
+            <template slot-scope="scope">
+              <el-button type="warning" size="small" @click="removeOrder(scope.row._id)">取消订单</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -78,7 +83,7 @@ export default {
         password: '',
         confirmPw: ''
       },
-      myOrderData: null,
+      myOrderData: [],
       // 修改密码验证规则
       accountFormRule: {
         password: [
@@ -99,8 +104,6 @@ export default {
   created() {
     const account = window.sessionStorage.getItem('account')
     this.accountForm.account = account
-    console.log(account)
-
     this.getMyOrder()
   },
   methods: {
@@ -123,6 +126,11 @@ export default {
       this.$http.get(`/order/${Number(this.accountForm.account)}`).then(res => {
         this.myOrderData = res.data
       })
+    },
+    // 取消该预约
+    removeOrder(id) {
+      this.$http.delete('/cancel_order/' + id)
+      this.getMyOrder()
     }
   }
 }
@@ -137,7 +145,7 @@ export default {
 }
 .el-form {
   /* border: 1px solid red; */
-  width:600px;
+  width: 600px;
   margin: 10px auto;
   font-size: 20px;
 }

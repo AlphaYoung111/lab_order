@@ -250,6 +250,29 @@ app.put('/api/check_seat', async (req, res) => {
   res.send(item)
 })
 
+// 添加新教室的接口
+app.post('/api/add_room', async (req, res) => {
+  await Room.create(req.body) 
+  res.send()
+})
+
+// 添加新实验种类的接口
+app.post('/api/add_cate', async (req, res) => {
+  await AllCate.create(req.body) 
+  res.send()
+})
+
+// 添加新的名表
+app.post('/api/add_account', async (req, res) => {
+  await AccountData.insertMany(req.body)
+  res.send()
+})
+
+// 取消申请的接口
+app.delete('/api/cancel_order/:id', async (req, res) => {
+  await Order.findByIdAndDelete(req.params.id)
+  res.send()
+})
 
 app.listen(33301, () => {
   console.log("http://localhost:33301");

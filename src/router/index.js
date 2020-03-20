@@ -10,6 +10,7 @@ const Profile = () => import('@/views/common/childCom/Profile')
 const Admin = () => import('@/views/admin/Admin')
 const ApproveOrder = () => import('@/views/admin/childCom/ApproveOrder')
 const LessonTable = () => import('@/views/admin/childCom/LessonTable')
+const UploadFile = () =>import('@/views/admin/childCom/UploadFile')
 
 Vue.use(VueRouter)
 
@@ -51,6 +52,7 @@ const routes = [
         path: 'profile',
         component: Profile
       }
+      
     ]
   },
   {
@@ -76,6 +78,10 @@ const routes = [
       {
         path: 'lesson_table',
         component: LessonTable
+      },
+      {
+        path: 'upload_file',
+        component:UploadFile
       }
     ]
   }
