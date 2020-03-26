@@ -10,7 +10,8 @@ const Profile = () => import('@/views/common/childCom/Profile')
 const Admin = () => import('@/views/admin/Admin')
 const ApproveOrder = () => import('@/views/admin/childCom/ApproveOrder')
 const LessonTable = () => import('@/views/admin/childCom/LessonTable')
-const UploadFile = () =>import('@/views/admin/childCom/UploadFile')
+const UploadFile = () => import('@/views/admin/childCom/UploadFile')
+const CanUse = ()=>import('@/views/admin/childCom/CanUse')
 
 Vue.use(VueRouter)
 
@@ -82,6 +83,10 @@ const routes = [
       {
         path: 'upload_file',
         component:UploadFile
+      },
+      {
+        path: 'can_use',
+        component:CanUse
       }
     ]
   }

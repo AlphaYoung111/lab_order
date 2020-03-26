@@ -53,20 +53,19 @@ export default {
           return this.$message.error('请正确填写登录信息')
         }
         this.$http.post('/login', this.loginForm).then(res => {
-          if (res.data.login_status === false)
-            return this.$message.error('账号或密码不正确')
-          const token = res.data._id
-          const username = res.data.username
-          const account = res.data.account
-          const isAdmin = res.data.isAdmin
-          const isTeacher = res.data.isTeacher
+          if (res.data.length == 0) this.$message.error('账号或密码不正确')
+          const token = res.data[0].id
+          const username = res.data[0].username
+          const account = res.data[0].account
+          const isAdmin = res.data[0].isAdmin
+          const isTeacher = res.data[0].isTeacher
           window.sessionStorage.setItem('token', token)
           window.sessionStorage.setItem('username', username)
           window.sessionStorage.setItem('isAdmin', isAdmin)
           window.sessionStorage.setItem('isTeacher', isTeacher)
           window.sessionStorage.setItem('account', account)
           this.$message.success(`登陆成功，欢迎回来   ${username} !`)
-          if (isAdmin === true) {
+          if (isAdmin == 'true') {
             this.$router.push('/admin')
           } else {
             this.$router.push('/common')

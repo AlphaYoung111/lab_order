@@ -28,19 +28,19 @@ vue.filter('dayForm', (val) => {
 
 vue.filter('lessonForm', (val) => {
   switch (val) {
-    case '0102':
+    case '102':
       return val = '第 1 ~ 2 节课'
       break;
-    case '0304':
+    case '304':
       return val = '第 3 ~ 4 节课'
       break;
-    case '0506':
+    case '506':
       return val = '第 5 ~ 6 节课'
       break;
-    case '0708':
+    case '708':
       return val = '第 7 ~ 8 节课'
       break;
-    case '0911':
+    case '911':
       return val = '第 9 ~ 11 节课'
       break;
 

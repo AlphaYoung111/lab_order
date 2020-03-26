@@ -6,127 +6,142 @@ app.use(require('cors')())
 app.use(express.json())
 
 // 连接数据库
-mongoose.connect('mongodb://localhost:27017/lab-order', {
-  useCreateIndex: true,
-  useNewUrlParser: true,
-  useFindAndModify: true,
+const c1 = 'mongodb://localhost:27017/lab-order'
+const c2 = 'mongodb://root:labOrder2020@s-bp1c4dd8955e5714-pub.mongodb.rds.aliyuncs.com:3717/lab-order'
+mongoose.connect(
+  c1,
+  {
+    useCreateIndex: true,
+    useNewUrlParser: true,
+    useFindAndModify: true,
+    useUnifiedTopology: true
+  }
+)
 
-  // useUnifiedTopology: true
-
-})
-
-app.get('/', (req, res) => {
+app.get('/', async (req, res) => {
   res.send('ok')
 })
 
 // 用户数据表
-const AccountData = mongoose.model('AccountData', new mongoose.Schema({
-  account: {
-    type: Number
-  },
-  username: {
-    type: String
-  },
-  password: {
-    type: String
-  },
-  isAdmin: {
-    type: Boolean
-  },
-  isTeacher: {
-    type: Boolean
-  }
-}))
+const AccountData = mongoose.model(
+  'AccountData',
+  new mongoose.Schema({
+    account: {
+      type: Number
+    },
+    username: {
+      type: String
+    },
+    password: {
+      type: String
+    },
+    isAdmin: {
+      type: Boolean
+    },
+    isTeacher: {
+      type: Boolean
+    }
+  })
+)
 
 // 分类数据
-const AllCate = mongoose.model('AllCate', new mongoose.Schema({
-  cate_id: {
-    type: String
-  },
-  cate_name: {
-    type: String
-  }
-}))
+const AllCate = mongoose.model(
+  'AllCate',
+  new mongoose.Schema({
+    cate_id: {
+      type: String
+    },
+    cate_name: {
+      type: String
+    }
+  })
+)
 
 // 实验室信息数据
-const Room = mongoose.model('Room', new mongoose.Schema({
-  room_id: {
-    type: String
-  },
-  cate_id: {
-    type: String
-  },
-  building: {
-    type: String
-  },
-  room_place: {
-    type: String
-  },
-  total: {
-    type: Number
-  },
-  seat_left: {
-    type: Number
-  }
-}))
+const Room = mongoose.model(
+  'Room',
+  new mongoose.Schema({
+    room_id: {
+      type: String
+    },
+    cate_id: {
+      type: String
+    },
+    building: {
+      type: String
+    },
+    room_place: {
+      type: String
+    },
+    total: {
+      type: Number
+    },
+    seat_left: {
+      type: Number
+    }
+  })
+)
 
 // 预约时间
-const FreeTime = mongoose.model('FreeTime', new mongoose.Schema({
-  week: {
-    type: String
-  },
-  day_options: {
-    type: Array
-  },
-  class_options: {
-    type: Object
-  },
-
-}))
+const FreeTime = mongoose.model(
+  'FreeTime',
+  new mongoose.Schema({
+    week: {
+      type: String
+    },
+    day_options: {
+      type: Array
+    },
+    class_options: {
+      type: Object
+    }
+  })
+)
 
 // 预约信息
-const Order = mongoose.model('Order', new mongoose.Schema({
-  week: {
-    type: String
-  },
-  day: {
-    type: String
-  },
-  classBetween: {
-    type: String
-  },
-  num: {
-    type: String
-  },
-  tel: {
-    type: String
-  },
-  isCheck: {
-    type: Boolean
-  },
-  room_id: {
-    type: String
-  },
-  create_date: {
-    type: String
-  },
-  isTeacher: {
-    type: Boolean
-  },
-  username: {
-    type: String
-  },
-  account: {
-    type: Number
-  },
-  room_place: {
-    type: String
-  }
+const Order = mongoose.model(
+  'Order',
+  new mongoose.Schema({
+    week: {
+      type: String
+    },
+    day: {
+      type: String
+    },
+    classBetween: {
+      type: String
+    },
+    num: {
+      type: String
+    },
+    tel: {
+      type: String
+    },
+    isCheck: {
+      type: Boolean
+    },
+    room_id: {
+      type: String
+    },
+    create_date: {
+      type: String
+    },
+    isTeacher: {
+      type: Boolean
+    },
+    username: {
+      type: String
+    },
+    account: {
+      type: Number
+    },
+    room_place: {
+      type: String
+    }
+  })
+)
 
-}))
-
-
-app.get('/account', async (req, res) => {
+app.get('/api/account', async (req, res) => {
   res.send(await AccountData.find())
 })
 
@@ -252,13 +267,13 @@ app.put('/api/check_seat', async (req, res) => {
 
 // 添加新教室的接口
 app.post('/api/add_room', async (req, res) => {
-  await Room.create(req.body) 
+  await Room.create(req.body)
   res.send()
 })
 
 // 添加新实验种类的接口
 app.post('/api/add_cate', async (req, res) => {
-  await AllCate.create(req.body) 
+  await AllCate.create(req.body)
   res.send()
 })
 
@@ -275,6 +290,5 @@ app.delete('/api/cancel_order/:id', async (req, res) => {
 })
 
 app.listen(33301, () => {
-  console.log("http://localhost:33301");
-
+  console.log('http://localhost:33301')
 })

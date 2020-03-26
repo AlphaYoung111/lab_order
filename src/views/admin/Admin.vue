@@ -26,6 +26,7 @@
         </template>
         <el-menu-item index="/admin/lesson_table">数据统计</el-menu-item>
         <el-menu-item index="/admin/upload_file">数据上传</el-menu-item>
+        <el-menu-item index="/admin/can_use">时间管理</el-menu-item>
       </el-submenu>
     </el-menu>
     <!-- 右边显示区域 -->
