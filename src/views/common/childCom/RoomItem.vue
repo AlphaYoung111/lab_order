@@ -19,28 +19,27 @@
         <!-- 星期 -->
         <el-form-item label="星期几" prop="day">
           <el-select v-model="orderForm.day" placeholder="请选择" @change="daySelect">
-            <el-option
-              v-for="(item,index) in dayOptions"
-              :key="index"
-              :label="item.label"
-              :value="item.value"
-            ></el-option>
+            <el-option v-for="(item,index) in dayOptions" :key="index" :label="item" :value="item">
+              <span style="float: left">{{item | dayForm}}</span>
+            </el-option>
           </el-select>
         </el-form-item>
         <!-- 节数 -->
         <el-form-item label="具体节数" prop="classBetween">
-          <el-select v-model="orderForm.classBetween" placeholder="请选择" @change="weekSelect">
+          <el-select v-model="orderForm.classBetween" placeholder="请选择" @change="classSelect">
             <el-option
               v-for="(lesson,i1) in classOptions"
               :key="i1"
-              :label="lesson.label"
-              :value="lesson.value"
-            ></el-option>
+              :label="lesson"
+              :value="lesson"
+            >
+              <span style="float: left">{{lesson | lessonForm}}</span>
+            </el-option>
           </el-select>
         </el-form-item>
         <!-- 实验室剩余空位 -->
-        <el-form-item label="剩余空位" label-width="120" v-show="this.orderForm.classBetween!==null">
-          <div class="left_num">{{this.canOrderNum}}</div>
+        <el-form-item label="剩余空位" label-width="120" v-show="orderForm.classBetween!==null">
+          <div class="left_num">{{canOrderNum + '/' + total}}</div>
         </el-form-item>
         <!-- 教师选择人数 -->
         <el-form-item label="申请人数" prop="num" v-if="orderForm.isTeacher">
@@ -78,7 +77,7 @@
   </div>
 </template>
 <script>
-import { mapActions } from 'vuex'
+// import { mapActions } from 'vuex'
 export default {
   name: 'roomitem',
   data() {
@@ -153,14 +152,14 @@ export default {
       ],
       // 具体周数的详细数据
       dayOptions: [],
-      // 选择周数后的所有实践
+      // 选择周数后的所有时间
       classData: null,
       // 选择天数后的实践
       classOptions: null,
       // 实验室已使用的订单
       leftData: null,
       // 已使用的数量
-      canOrderNum: null
+      canOrderNum: 0
     }
   },
   created() {
@@ -176,37 +175,50 @@ export default {
     this.orderForm.room_place = building + room_place
   },
   methods: {
-    ...mapActions,
+    // ...mapActions,
     getRoomItem() {
       this.orderForm.room_id = this.$route.params.id
       const isTeacher = window.sessionStorage.getItem('isTeacher')
-      if (isTeacher === 'false') return
+      if (isTeacher === 'false' || isTeacher == '0') return
       this.orderForm.isTeacher = true
+    },
+    // 数组去重
+    arrayUnique(arr) {
+      return Array.from(new Set(arr))
     },
     // 输入具体周数后
     weekTypeIn() {
-      this.$http.get('/free_time/' + this.orderForm.week).then(res => {
-        this.dayOptions = res.data[0].day_options
-        this.classData = res.data[0].class_options
+      this.$http.get(`/free_time/${this.orderForm.week}/${this.orderForm.room_id}` ).then(res => {
+        // this.dayOptions = res.data[0].day_options
+        // this.classData = res.data[0].class_options
+        this.classData = res.data
+        const arr = res.data.map(item => item.day)
+        const op = this.arrayUnique(arr)
+        this.dayOptions = op
       })
     },
     // 选择星期几
     daySelect() {
-      const key = `day${this.orderForm.day}`
-      this.classOptions = this.classData[`${key}`]
+      const day = this.orderForm.day
+      let orderDay = this.classData.filter(item => item.day == day)
+      const arr = orderDay.map(item => item.classBetween)
+      this.classOptions = arr
     },
     // 周数选择好后
-    weekSelect() {
-      console.log(this.orderForm.room_id)
-      this.$http.put('/check_seat', this.orderForm).then(res => {
-        this.leftData = res.data
-        let used_num = this.leftData.reduce((acc, cur) => {
-          return acc + Number(cur.num)
-        }, 0)
-        if (used_num >= this.total) {
-          this.canOrderNum = 0
+    classSelect() {
+      this.$http.post('/check_seat', this.orderForm).then(res => {
+        if (res.data.length == 0) {
+          this.canOrderNum = this.total
         } else {
-          this.canOrderNum = this.total - used_num
+          this.leftData = res.data
+          let used_num = this.leftData.reduce((acc, cur) => {
+            return acc + Number(cur.num)
+          }, 0)
+          if (used_num >= this.total) {
+            this.canOrderNum = 0
+          } else {
+            this.canOrderNum = this.total - used_num
+          }
         }
       })
     },

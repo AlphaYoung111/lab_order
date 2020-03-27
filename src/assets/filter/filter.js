@@ -2,25 +2,25 @@ import vue from 'vue'
 
 vue.filter('dayForm', (val) => {
   switch (val) {
-    case '01':
+    case '1':
       return val = '星期一'
       break;
-    case '02':
+    case '2':
       return val = '星期二'
       break;
-    case '03':
+    case '3':
       return val = '星期三'
       break;
-    case '04':
+    case '4':
       return val = '星期四'
       break;
-    case '05':
+    case '5':
       return val = '星期五'
       break;
-    case '06':
+    case '6':
       return val = '星期六'
       break;
-    case '07':
+    case '7':
       return val = '星期七'
       break;
   }

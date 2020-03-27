@@ -91,5 +91,86 @@ app.post('/api/free_time/:id', async (req, res) => {
   res.send()
 })
 
+// 具体预约时间确定周数后的接口
+app.get('/api/free_time/:week/:id', async (req, res) => {
+  const week = req.params.week
+  const id = req.params.id
+  const str = `select * from freetime where week = ${week} and room_id = ${id} `
+  const data = await sqlQuery(str)
+  res.send(data)
+})
+
+// 教室容量确认的接口
+app.post('/api/check_seat', async (req, res) => {
+  const week = req.body.week
+  const classBetween = req.body.classBetween
+  const day = req.body.day
+  const str = `select * from orders where week =${week} and classBetween = ${classBetween} and day = ${day}`
+  const item = await sqlQuery(str)
+  res.send(item)
+})
+
+// 创建预约订单接口
+app.post('/api/order', async (req, res) => {
+  const data = req.body
+  const { week, day, classBetween, isTeacher, num, tel, isCheck, room_id, create_date, username, account, room_place } = data
+  const str = `insert into orders(week, day, classBetween, isTeacher, num, tel, isCheck, room_id, create_date, username, account, room_place) values(?,?,?,?,?,?,?,?,?,?,?,?)`
+  const arr = [week, day, classBetween, isTeacher, num, tel, isCheck, room_id, create_date, username, account, room_place]
+  await sqlQuery(str,arr)
+  res.send(data)
+})
+
+// 学生获取自己订单数据的接口
+app.get('/api/order/:id', async (req, res) => {
+  const account = req.params.id
+  const str = `select * from orders where account = ${account}`
+  const data =await sqlQuery(str)
+  res.send(data)
+})
+
+// 取消订单申请的接口
+app.delete('/api/cancel_order/:id', async (req, res) => {
+  const id = req.params.id
+  const str = `delete from orders where id = ${id}`
+  await sqlQuery(str)
+  res.send()
+})
+
+// 管理员获取未审批订单
+app.get('/api/order_to_check', async (req, res) => {
+  const str = `select * from  orders where isCheck = 'false' or isCheck = '0' `
+  const data = await sqlQuery(str)
+  res.send(data)
+})
+
+// 管理员获取所有审批后的接口
+app.get('/api/agree_order', async (req, res) => {
+  const str = `select * from orders where isCheck = 'true' or isCheck = '1'`
+  const item = await sqlQuery(str)
+  res.send(item)
+})
+
+// 管理员通过订单id审批接口
+app.put('/api/check_order/:id', async (req, res) => {
+  const id = req.params.id
+  const str = `update orders set isCheck = '1' where id = ${id}`
+  await sqlQuery(str)
+  res.send()
+})
+
+// 获取全部订单
+app.get('/api/all_order', async (req, res) => {
+  const str = `select * from orders`
+  const item = await sqlQuery(str)
+  res.send(item)
+})
+
+// 获取指定日期的订单的接口
+app.get('/api/date_order/:date', async (req, res) => {
+  let date = req.params.date
+  const str = `select * from orders where create_date = '${date}'`
+  const item = await sqlQuery(str)
+  res.send(item)
+})
 
 app.listen(33301)

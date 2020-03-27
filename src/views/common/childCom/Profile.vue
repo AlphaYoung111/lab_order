@@ -54,7 +54,7 @@
           </el-table-column>
           <el-table-column align="center" label="点击取消" fixed="right" width="100px">
             <template slot-scope="scope">
-              <el-button type="warning" size="small" @click="removeOrder(scope.row._id)">取消订单</el-button>
+              <el-button type="warning" size="small" @click="removeOrder(scope.row.id)">取消订单</el-button>
             </template>
           </el-table-column>
         </el-table>

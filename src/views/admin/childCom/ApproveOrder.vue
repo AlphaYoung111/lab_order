@@ -20,13 +20,13 @@
           <el-table-column align="center" prop="tel" label="联系电话" min-width="100px"></el-table-column>
           <el-table-column align="center" prop="isCheck" label="审核状态" min-width="90px">
             <template slot-scope="scope">
-              <el-tag type="success" effect="dark" v-if="scope.row.isCheck">审批成功</el-tag>
+              <el-tag type="success" effect="dark" v-if="scope.row.isCheck=='true' || scope.row.isCheck == '1'">审批成功</el-tag>
               <el-tag type="warning" v-else>审批中</el-tag>
             </template>
           </el-table-column>
           <el-table-column label="操作">
             <template slot-scope="scope">
-              <el-button type="info" icon="el-icon-edit" @click="editOrder(scope.row._id)"></el-button>
+              <el-button type="info" icon="el-icon-edit" @click="editOrder(scope.row.id)"></el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -50,7 +50,7 @@
           <el-table-column align="center" prop="tel" label="联系电话" min-width="150px"></el-table-column>
           <el-table-column align="center" prop="isCheck" label="审核状态" min-width="150px">
             <template slot-scope="scope">
-              <el-tag type="success" effect="dark" v-if="scope.row.isCheck">审批成功</el-tag>
+              <el-tag type="success" effect="dark" v-if="scope.row.isCheck=='true' || scope.row.isCheck == '1'">审批成功</el-tag>
               <el-tag type="warning" v-else>审批中</el-tag>
             </template>
           </el-table-column>

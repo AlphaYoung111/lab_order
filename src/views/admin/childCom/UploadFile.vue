@@ -27,7 +27,7 @@
           >上传文件</el-button
         >
         <el-main>
-          <el-table border stripe :data="stdArr" max-height="700">
+          <el-table border stripe :data="stdArr" max-height="550">
             <el-table-column type="index"></el-table-column>
             <el-table-column prop="account" label="学号"></el-table-column>
             <el-table-column prop="username" label="用户名"></el-table-column>
@@ -35,11 +35,15 @@
             <el-table-column
               prop="isAdmin"
               label="是否为管理员"
-            ></el-table-column>
+            >
+            <template slot-scope="scope">{{scope.row.isAdmin}}</template>
+            </el-table-column>
             <el-table-column
               prop="isTeacher"
               label="是否为老师"
-            ></el-table-column>
+            >
+             <template slot-scope="scope">{{scope.row.isTeacher}}</template>
+            </el-table-column>
           </el-table>
         </el-main>
       </el-tab-pane>
@@ -259,7 +263,9 @@ export default {
         obj.username = v['用户名']
         obj.password = v['密码']
         obj.isAdmin = v['是否为管理员']
+        obj.isAdmin = Boolean(obj.isAdmin)
         obj.isTeacher = v['是否为老师']
+        obj.isTeacher = Boolean(obj.isTeacher)
         arr.push(obj)
       })
       this.stdArr = arr

@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-card>
-      <el-alert title="请一次只输入一个区间段" type="info" show-icon center :closable="false"></el-alert>
+      <el-alert title="请选择具体的实验室教室后在上传表格" type="info" show-icon center :closable="false"></el-alert>
       <el-form :model="freetime" ref="form">
         <el-form-item label="实验室种类" placeholder="请选择实验室种类">
           <el-select v-model="freetime.cate_id" @change="getRoom">
@@ -37,7 +37,7 @@
           >
             <el-button type="info" style="margin-top:20px;">选择文件</el-button>
           </el-upload>
-          <el-button type="primary" size="medium" class="upload_btn" @click="uploadStd">上传文件</el-button>
+          <el-button type="primary" size="medium" style="margin-top:20px;" class="upload_btn" @click="uploadStd">上传文件</el-button>
         </el-form-item>
       </el-form>
     </el-card>
@@ -166,6 +166,8 @@ export default {
     },
     uploadStd() {
       this.$http.post('/free_time/' + this.freetime.room_id, this.stdArr)
+      this.freetime.cate_id = null
+      this.freetime.room_id =null
     },
     stdOptions(item) {
       let arr = []
