@@ -36,7 +36,7 @@
         <!-- 我的预约 -->
         <el-table :data="myOrderData" style="width: 100%" border stripe max-height="600">
           <el-table-column align="center" prop="create_date" label="申请时间" min-width="120px"></el-table-column>
-          <el-table-column align="center" prop="room_place" label="教室号"></el-table-column>
+          <el-table-column align="center" prop="room_place" label="教室号" min-width="120px"></el-table-column>
           <el-table-column align="center" prop="week" label="周数"></el-table-column>
           <el-table-column align="center" label="星期数">
             <template slot-scope="scope">{{scope.row.day | dayForm}}</template>
@@ -48,8 +48,14 @@
           <el-table-column align="center" prop="tel" label="联系电话" min-width="150px"></el-table-column>
           <el-table-column align="center" prop="isCheck" label="审核状态" min-width="150px">
             <template slot-scope="scope">
-              <el-tag type="info" effect="dark" v-if="scope.row.isCheck">审批成功</el-tag>
+              <el-tag type="info" effect="dark" v-if="scope.row.isCheck == '1' ||scope.row.isCheck=='true'">审批成功</el-tag>
               <el-tag type="warning" effect="dark" v-else>审批中</el-tag>
+            </template>
+          </el-table-column>
+          <el-table-column align="center" prop="code" label="验证码" min-width="150px">
+            <template slot-scope="scope">
+              <el-tag type="info" effect="dark" v-if="scope.row.isCheck == '0' ||scope.row.isCheck=='false'">审批通过后生成</el-tag>
+              <el-tag type="warning" effect="dark" v-else>{{scope.row.code}}</el-tag>
             </template>
           </el-table-column>
           <el-table-column align="center" label="点击取消" fixed="right" width="100px">
@@ -122,8 +128,9 @@ export default {
       this.$refs.accountFormRef.resetFields()
     },
     // 获取个人的预定信息
-    getMyOrder() {
+    getMyOrder() {     
       this.$http.get(`/order/${Number(this.accountForm.account)}`).then(res => {
+        
         this.myOrderData = res.data
       })
     },

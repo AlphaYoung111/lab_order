@@ -113,9 +113,10 @@ app.post('/api/check_seat', async (req, res) => {
 // 创建预约订单接口
 app.post('/api/order', async (req, res) => {
   const data = req.body
+  const code = createCode()
   const { week, day, classBetween, isTeacher, num, tel, isCheck, room_id, create_date, username, account, room_place } = data
-  const str = `insert into orders(week, day, classBetween, isTeacher, num, tel, isCheck, room_id, create_date, username, account, room_place) values(?,?,?,?,?,?,?,?,?,?,?,?)`
-  const arr = [week, day, classBetween, isTeacher, num, tel, isCheck, room_id, create_date, username, account, room_place]
+  const str = `insert into orders(week, day, classBetween, isTeacher, num, tel, isCheck, room_id, create_date, username, account, room_place,code) values(?,?,?,?,?,?,?,?,?,?,?,?,?)`
+  const arr = [week, day, classBetween, isTeacher, num, tel, isCheck, room_id, create_date, username, account, room_place,code]
   await sqlQuery(str,arr)
   res.send(data)
 })
@@ -150,11 +151,26 @@ app.get('/api/agree_order', async (req, res) => {
   res.send(item)
 })
 
+
+//生成随机数
+function createCode() {
+  let code = ""
+  let codeArr = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+  let length = 6;
+  // code = "";
+  for (let i = 0; i < length; i++) {
+    let randomI = Math.floor(Math.random() * 10);
+    code += codeArr[randomI];
+  }
+  return code
+}
 // 管理员通过订单id审批接口
 app.put('/api/check_order/:id', async (req, res) => {
+  // const code = createCode()
   const id = req.params.id
-  const str = `update orders set isCheck = '1' where id = ${id}`
+  const str = `update orders set isCheck = '1'  where id = ${id}`
   await sqlQuery(str)
+  // await sqlQuery(codeStr)
   res.send()
 })
 
