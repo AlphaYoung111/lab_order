@@ -168,6 +168,10 @@ export default {
       this.$http.post('/free_time/' + this.freetime.room_id, this.stdArr)
       this.freetime.cate_id = null
       this.freetime.room_id =null
+       this.$message({
+        type:'success',
+        message:'提交成功'
+      })
     },
     stdOptions(item) {
       let arr = []

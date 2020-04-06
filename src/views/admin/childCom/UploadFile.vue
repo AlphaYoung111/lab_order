@@ -156,9 +156,17 @@ export default {
         this.$http.post('/add_room',this.roomObj)
         this.$http.post('/add_cate',this.cateObj)
       }
+       this.$message({
+        type:'success',
+        message:'提交成功'
+      })
     },
     uploadStd(){
       this.$http.post('/add_account',this.stdArr)
+      this.$message({
+        type:'success',
+        message:'提交成功'
+      })
     },
     handleStudentChange(file, fileList) {
       this.fileTemp = file.raw
