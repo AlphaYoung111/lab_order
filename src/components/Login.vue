@@ -1,7 +1,7 @@
 <template>
   <div class="login">
     <div class="bg_img">
-      <img src="https://ae01.alicdn.com/kf/Hb256065b233c46a4b55a4dc9a42749f5n.jpg" alt />
+      <img src="~@/assets/img/slide-01.jpg" alt />
       <el-card class="login_place">
         <!-- 表单 -->
         <el-form

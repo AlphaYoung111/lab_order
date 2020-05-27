@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-const Login = ()=>import('@/components/Login')
+const Login = () => import('@/components/Login')
 const Home = () => import('@/views/Home')
 const Student = () => import('@/views/common/Student')
 const AllCate = () => import('@/views/common/childCom/AllCate')
@@ -11,25 +11,26 @@ const Admin = () => import('@/views/admin/Admin')
 const ApproveOrder = () => import('@/views/admin/childCom/ApproveOrder')
 const LessonTable = () => import('@/views/admin/childCom/LessonTable')
 const UploadFile = () => import('@/views/admin/childCom/UploadFile')
-const CanUse = ()=>import('@/views/admin/childCom/CanUse')
+const CanUse = () => import('@/views/admin/childCom/CanUse')
 
 Vue.use(VueRouter)
 
 const routes = [
   {
     path: '',
-    redirect:'/login'
+    redirect: '/login'
   },
   {
     path: '/login',
-    component:Login
+    component: Login
   },
-  
+
   {
     path: '/common',
     name: 'student',
     component: Student,
-    children: [{
+    children: [
+      {
         path: '',
         redirect: 'home'
       },
@@ -53,7 +54,6 @@ const routes = [
         path: 'profile',
         component: Profile
       }
-      
     ]
   },
   {
@@ -65,10 +65,12 @@ const routes = [
       if (!isAdmin) return next('/login')
       next()
     },
-    children: [{
+    children: [
+      {
         path: '',
         redirect: 'home'
-      }, {
+      },
+      {
         path: 'home',
         component: Home
       },
@@ -82,15 +84,14 @@ const routes = [
       },
       {
         path: 'upload_file',
-        component:UploadFile
+        component: UploadFile
       },
       {
         path: 'can_use',
-        component:CanUse
+        component: CanUse
       }
     ]
   }
-
 ]
 
 const router = new VueRouter({
@@ -104,7 +105,6 @@ router.beforeEach((to, from, next) => {
   const haveToken = window.sessionStorage.getItem('token')
   if (!haveToken) return next('/login')
   next()
-
 })
 
 export default router
